@@ -29,11 +29,11 @@ export const WorkspaceMenu=[
         icon:LayoutDashboard,
         path:'/workspace/templates'
      },
-     {
-        name:'Billing',
-        icon:WalletCards,
-        path:'/workspace/billing'
-     },
+    //  {
+    //     name:'Billing',
+    //     icon:WalletCards,
+    //     path:'/workspace/billing'
+    //  },
 ]
 
 export const canvasSizeOptions=[
