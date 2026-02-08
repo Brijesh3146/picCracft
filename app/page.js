@@ -91,7 +91,7 @@ export default function Home() {
         <h2 className="text-6xl md:text-7xl font-bold mb-8 leading-tight bg-gradient-to-r from-blue-700 via-purple-700 to-pink-700 bg-clip-text text-transparent group-hover:from-blue-800 group-hover:via-purple-800 group-hover:to-pink-800 transition-all duration-300">
           {displayedText || "Create Stunning Designs in Minutes"}
         </h2>
-        <p className="text-lg text-gray-700 mb-14 max-w-2xl mx-auto leading-relaxed text-italic">
+        <p className="text-lg text-gray-700 mb-14 max-w-2xl mx-auto leading-relaxed italic">
           Professional graphic design made simple. Edit images, create social media posts, and design marketing materials with AI-powered tools.
         </p>
         <Link href="/workspace">

@@ -11,7 +11,7 @@ const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL);
 
 
   return (
-    <Suspense fallback={<div>Loading.....</div>}>
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading.....</div>}>
     <ConvexProvider client={convex}>
         <Provider>
            {children}
