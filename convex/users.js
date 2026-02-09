@@ -5,7 +5,7 @@ export const CreateNewUser=mutation({
     args: {
         name:v.string(),
         email:v.string(),
-        picture:v.string()
+        picture:v.optional(v.string())
     },
     handler:async(ctx,args)=>{
         // if user already exist?
@@ -15,11 +15,14 @@ export const CreateNewUser=mutation({
         // if Not, then will insert new user
         if(userData?.length==0)
         {
-            const result=await ctx.db.insert('users',{
+            const insertData = {
                 name:args.name,
-                email:args.email,
-                picture:args.picture
-            });
+                email:args.email
+            };
+            if(args.picture) {
+                insertData.picture = args.picture;
+            }
+            const result=await ctx.db.insert('users', insertData);
             return result;
         }
         return userData[0];

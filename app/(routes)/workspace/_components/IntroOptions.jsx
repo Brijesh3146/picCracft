@@ -19,12 +19,21 @@ function IntroOptions() {
  * @param {*} option 
  */
   const OnCanvasOptionSelect=async (option)=>{
+    console.log('userDetail:', userDetail);
+    
+    if(!userDetail || !userDetail._id){
+      toast.warning('Login to save designs');
+      // Pass design info in URL for guest users
+      router.push(`/design/guest-${Date.now()}?width=${option.width}&height=${option.height}&name=${option.name}`);
+      return;
+    }
+    // Only call mutation for logged-in users
     toast('Loading....')
     const result= await createDesignRecord({
       name:option.name,
       width:option.width,
       height:option.height,
-      uid:userDetail?._id
+      uid:userDetail._id
     });
     console.log(result);
     //navigate to Editor Screen

@@ -13,38 +13,31 @@ function CanvasEditor({ DesignInfo }) {
      
     useEffect(()=>{
         if (!DesignInfo || !canvasRef.current) return;
+        if (!DesignInfo.width || !DesignInfo.height) return;
         console.log("designInfo",DesignInfo);
-        if(canvasRef.current && DesignInfo)
-        {
-            const initCanvas=new Canvas(canvasRef.current,{
-                width:DesignInfo?.width/2,
-                height:DesignInfo?.height/2,
-                backgroundColor:'#fff',
-                preserveObjectStacking:true
-            })
+        
+        const initCanvas=new Canvas(canvasRef.current,{
+            width:Number(DesignInfo.width),
+            height:Number(DesignInfo.height),
+            backgroundColor:'#fff',
+            preserveObjectStacking:true
+        })
 
-           // set High Resolution Canvas
-           const scaleFactor= window.devicePixelRatio || 1;
-           initCanvas.set({
-            width:DesignInfo?.width * scaleFactor,
-            height:DesignInfo?.height * scaleFactor,
-            zoom: 1 / scaleFactor
-           })
+       if(DesignInfo?.jsonTemplate)
+       {
+        initCanvas.loadFromJSON(DesignInfo?.jsonTemplate, ()=>{
+          initCanvas?.requestRenderAll();
+        })
+       }
+        initCanvas.renderAll();
+        setCanvas(initCanvas)
+        setCanvasEditor(initCanvas);
+        console.log('Canvas created:', initCanvas.getWidth(), initCanvas.getHeight());
 
-           if(DesignInfo?.jsonTemplate)
-           {
-            initCanvas.loadFromJSON(DesignInfo?.jsonTemplate, ()=>{
-              initCanvas?.requestRenderAll();
-            })
-           }
-            initCanvas.renderAll();
-            setCanvas(initCanvas)
-            setCanvasEditor(initCanvas);
-            return () => {
-                initCanvas.dispose();
-            }
+        return () => {
+            initCanvas.dispose();
         }
-        }, [DesignInfo])
+    }, [DesignInfo?.width, DesignInfo?.height, DesignInfo?.jsonTemplate])
 
         /**
          * Used to Delete the selected Element/Object

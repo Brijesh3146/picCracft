@@ -35,6 +35,12 @@ function CustomCanvasDialog({children}) {
  * 
  */
   const OnCreate=async ()=>{
+    if(!userDetail || !userDetail._id){
+      toast.warning('Login to save designs');
+      setLoading(false);
+      router.push(`/design/guest-${Date.now()}?width=${width}&height=${height}&name=${name}`);
+      return;
+    }
 
     toast('Loading....')
     setLoading(true);
@@ -42,7 +48,7 @@ function CustomCanvasDialog({children}) {
       name: name,
       width:  Number(width),
       height: Number(height),
-      uid:userDetail?._id
+      uid:userDetail._id
     });
     console.log(result);
     setLoading(false);

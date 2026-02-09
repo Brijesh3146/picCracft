@@ -3,6 +3,7 @@
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 import React, { Suspense } from 'react'
 import Provider from "./provider";
+import { Heading1 } from "lucide-react";
 //import { stackClientApp } from "../stack/client";
 
 function ConvexClientProvider({children}) {
@@ -11,7 +12,7 @@ const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL);
 
 
   return (
-    <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading.....</div>}>
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen text-2xl font-bold">Loading.....</div>}>
     <ConvexProvider client={convex}>
         <Provider>
            {children}

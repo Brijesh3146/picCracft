@@ -18,11 +18,11 @@ function Provider({children}) {
         const data={
             name: user?.displayName || user?.primaryEmail?.split('@')[0] || "Anonymous",
             email: user?.primaryEmail,
-            picture: user?.profileImageUrl,
         }
-        const result= await createNewUserMutation({
-            ...data
-        });
+        if(user?.profileImageUrl) {
+            data.picture = user.profileImageUrl;
+        }
+        const result= await createNewUserMutation(data);
         console.log(result);
         setUserDetail(result);
     }

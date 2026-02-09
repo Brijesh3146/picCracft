@@ -68,6 +68,12 @@ function DesignHeader({DesignInfo}) {
   const onSave=async()=>{
     if (!canvasEditor) return;
 
+    // Check if guest mode
+    if (designId?.startsWith('guest-')) {
+      toast.warning('Login to save designs');
+      return;
+    }
+
   // Ensure latest render
   canvasEditor.renderAll();
 

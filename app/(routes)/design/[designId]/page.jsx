@@ -1,5 +1,5 @@
 "use client"
-import { useParams } from 'next/navigation'
+import { useParams, useSearchParams } from 'next/navigation'
 import React, { useContext, useState } from 'react'
 import DesignHeader from '../_components/DesignHeader';
 import { useQuery } from 'convex/react';
@@ -10,20 +10,33 @@ import { CanvasContext } from '@/app/context/CanvasContext';
 
 function DesignEditor() {
     const {designId}=useParams();
+    const searchParams = useSearchParams();
     const [canvasEditor, setCanvasEditor]=useState();
-    const DesignInfo=useQuery(api.designs.GetDesign, {
+    const isGuestMode = designId?.startsWith('guest-');
+    
+    const DesignInfo=useQuery(api.designs.GetDesign, 
+        isGuestMode ? "skip" : {
         id:designId
     });
+
+    // Get design info from URL params for guest users
+    const guestDesignInfo = isGuestMode ? {
+        name: searchParams.get('name') ,
+        width: Number(searchParams.get('width')) ,
+        height: Number(searchParams.get('height'))
+    } : null;
+
+    const finalDesignInfo = isGuestMode ? guestDesignInfo : DesignInfo;
 
 
   return (
     <div className='flex flex-col h-screen'>
       <CanvasContext.Provider value={{canvasEditor, setCanvasEditor}}>
-        <DesignHeader DesignInfo={DesignInfo} className='flex-shrink-0'/>
+        <DesignHeader DesignInfo={finalDesignInfo} className='flex-shrink-0'/>
         <div className='flex'>
             <SideBar/>
             <div className='flex-1 overflow-auto'>
-            <CanvasEditor DesignInfo={DesignInfo} />
+            <CanvasEditor DesignInfo={finalDesignInfo} />
             </div>
         </div>
         </CanvasContext.Provider>
