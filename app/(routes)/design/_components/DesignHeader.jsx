@@ -8,7 +8,6 @@ import { useMutation } from 'convex/react'
 import { useParams } from 'next/navigation'
 import { toast } from 'sonner'
 import { api } from '@/convex/_generated/api'
-import ImageKit from 'imagekit'
 
 
 function DesignHeader({DesignInfo}) {
@@ -23,12 +22,6 @@ function DesignHeader({DesignInfo}) {
     }
   }, [DesignInfo?.name]);
   const {designId}=useParams();
-
-  var imagekit= new ImageKit({
-        publicKey:process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY,
-        privateKey:process.env.NEXT_PUBLIC_IMAGEKIT_PRIVATE_KEY,
-        urlEndpoint:process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT_KEY
-    });
 
  function getCroppedDataURL(canvas) {
   const objs = canvas.getObjects();
@@ -68,46 +61,36 @@ function DesignHeader({DesignInfo}) {
   const onSave=async()=>{
     if (!canvasEditor) return;
 
-    // Check if guest mode
     if (designId?.startsWith('guest-')) {
       toast.warning('Login to save designs');
       return;
     }
 
-  // Ensure latest render
   canvasEditor.renderAll();
-
-  // Get perfectly cropped image
   const base64Image = getCroppedDataURL(canvasEditor);
 
   try {
-    // Check if file already exists
-    const existingFiles = await imagekit.listFiles({
-      searchQuery: `name="${designId}.png"`
+    const response = await fetch('/api/upload-image', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        file: base64Image, 
+        fileName: `${designId}.png` 
+      })
     });
 
-    if (existingFiles?.length > 0 && existingFiles[0]?.fileId) {
-      await imagekit.deleteFile(existingFiles[0].fileId);
-    }
+    const data = await response.json();
+    if (data.error) throw new Error(data.error);
 
-    // Upload new cropped image
-    const imageRef = await imagekit.upload({
-      file: base64Image,
-      fileName: `${designId}.png`,
-      isPublished: true,
-      useUniqueFileName: false
-    });
-
-    const updatedUrl = `${imageRef.url}?t=${Date.now()}`;
-
-    // Save design JSON + preview
+    const updatedUrl = `${data.url}?t=${Date.now()}`;
     const JsonDesign = canvasEditor.toJSON();
+    
     await SaveDesign({
       id: designId,
       jsonDesign: JsonDesign,
       imagePreview: updatedUrl
     });
-    console.log('image',updatedUrl);  
+    
     toast('Design saved!');
   } catch (err) {
     console.error('Save error:', err);
