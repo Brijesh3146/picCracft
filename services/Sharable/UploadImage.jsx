@@ -1,4 +1,3 @@
-import ImageKit from 'imagekit'
 import React, { useState } from 'react'
 import { useParams } from 'next/navigation';
 import { FabricImage } from 'fabric';
@@ -10,32 +9,36 @@ function UploadImage() {
   const [loading, setLoading]=useState();
   const {canvasEditor}=useCanvasHook();
 
-    var imagekit= new ImageKit({
-        publicKey:process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY,
-        privateKey:process.env.NEXT_PUBLIC_IMAGEKIT_PRIVATE_KEY,
-        urlEndpoint:process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT_KEY
-    });
-
     const onFileUpload = async (event) =>{
       setLoading(true);
       const file=event.target.files[0];
-      const imageRef=await imagekit.upload({
-        file: file,
-        fileName: designId +".png",
-        isPublished: true
-      });
-      console.log(imageRef.url);
+      
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = async () => {
+        const base64 = reader.result;
+        
+        const response = await fetch('/api/upload-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            file: base64, 
+            fileName: `${designId}-${Date.now()}.png` 
+          })
+        });
 
-      const canvasImageRef=await FabricImage.fromURL(
-        imageRef?.url,
-        {
-          crossOrigin:'anonymous'
-        }
-      )
-      canvasEditor.add(canvasImageRef);
-      //canvasEditor.renderAll();
+        const data = await response.json();
+        console.log(data.url);
 
-      setLoading(false);
+        const canvasImageRef=await FabricImage.fromURL(
+          data.url,
+          {
+            crossOrigin:'anonymous'
+          }
+        )
+        canvasEditor.add(canvasImageRef);
+        setLoading(false);
+      };
     }
   return (
     <div>

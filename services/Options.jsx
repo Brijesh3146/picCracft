@@ -12,6 +12,7 @@ import AITransformationSetting from "./Components/AITransformationSetting";
 import TextSettings from "./Components/TextSettings";
 import FontFamily from "./Sharable/FontFamily";
 import TemplatesList from "./Components/TemplatesList";
+import CanvasSizeSetting from "./Components/CanvasSizeSetting";
 
 export const WorkspaceMenu=[
      {
@@ -45,56 +46,56 @@ export const canvasSizeOptions=[
     },
     {
         name:'Instagram Story',
-        width:1080,
-        height:1600,
+        width:375,
+        height:667,
         icon:'/insta.png'
     },
     {
         name:'YouTube Thumbnail',
-        width:1280,
-        height:720,
+        width:640,
+        height:360,
         icon:'/youtube.png'
     },
     {
         name:'YouTube Banner',
-        width:1600,
-        height:900,
+        width:800,
+        height:450,
         icon:'/youtube.png'
     },
     {
-        name:'YouTube Post',
-        width:1200,
-        height:1200,
+        name:'YouTube Community Post',
+        width:500,
+        height:500,
         icon:'/youtube.png'
     },
      {
         name:'PowerPoint Slide',
-        width:1920,
-        height:1080,
+        width:800,
+        height:450,
         icon:'/ppt.png'
     },
     {
         name:'Facebook Post',
-        width:1200,
-        height:630,
+        width:600,
+        height:315,
         icon:'/facebook.png'
     },
     {
         name:'Twitter Post',
-        width:1600,
-        height:900,
+        width:600,
+        height:338,
         icon:'/twit.png'
     },
      {
         name:'LinkedIn Post',
-        width:1200,
-        height:627,
+        width:600,
+        height:314,
         icon:'/linkedin.png'
     },
      {
-        name:'pinterest Pins',
-        width:1000,
-        height:1500,
+        name:'Pinterest Pin',
+        width:400,
+        height:600,
         icon:'/pintrest.png'
     },
 ];
@@ -138,8 +139,9 @@ export const sideBarMenu = [
     },
     {
         name:'Settings',
-        desc:'Update Canvas Size and background',
-        icon:Settings
+        desc:'Update Canvas Size',
+        icon:Settings,
+        component:<CanvasSizeSetting/>
     },
 ]
 
