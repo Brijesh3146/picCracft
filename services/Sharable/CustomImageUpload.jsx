@@ -1,7 +1,6 @@
 import { ImageUp, Loader } from 'lucide-react';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react'
-import ImageKit from 'imagekit';
 import { useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { FabricImage } from 'fabric';
@@ -13,25 +12,29 @@ function CustomImageUpload({selectedAi}) {
     const {designId}=useParams();
     const {canvasEditor}=useCanvasHook();
 
-    var imagekit= new ImageKit({
-        publicKey:process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY,
-        privateKey:process.env.NEXT_PUBLIC_IMAGEKIT_PRIVATE_KEY,
-        urlEndpoint:process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT_KEY
-    });
-
     const onImageUpload=async(event)=>{
         setLoading(true);
         const file=event.target.files[0];
-        const imageRef=await imagekit.upload({
-        file: file,
-        fileName: designId +".png",
-        isPublished: true
-      });
-      console.log(imageRef.url);
-    
-        setImage(imageRef.url);
         
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = async () => {
+            const base64 = reader.result;
+            
+            const response = await fetch('/api/upload-image', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    file: base64, 
+                    fileName: `${designId}-${Date.now()}.png` 
+                })
+            });
+
+            const data = await response.json();
+            console.log(data.url);
+            setImage(data.url);
             setLoading(false);
+        };
     }
     
     const onAddToCanvas=async()=>{
