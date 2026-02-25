@@ -13,8 +13,11 @@ function TemplatesList() {
         if(canvasEditor){
           canvasEditor.clear();
           canvasEditor.loadFromJSON(template?.jsonData, () => {
-            canvasEditor?.requestRenderAll();
-            console.log("template.jsonData:", template?.jsonData);
+            if(template?.jsonData?.width && template?.jsonData?.height){
+              canvasEditor.setWidth(template.jsonData.width);
+              canvasEditor.setHeight(template.jsonData.height);
+            }
+            canvasEditor.renderAll();
           })
         }
   };
