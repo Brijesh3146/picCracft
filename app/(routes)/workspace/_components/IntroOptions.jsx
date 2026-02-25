@@ -48,14 +48,14 @@ function IntroOptions() {
       />
       <h2 className='text-3xl absolute bottom-5 left-10 text-white'>Workspace</h2>
     </div>
-    <div className='flex gap-6 items-center mt-10 justify-center'>
+    <div className='flex flex-wrap gap-3 md:gap-6 items-center mt-10 justify-center'>
         {canvasSizeOptions.map((option,index)=>(
-            <div key={index} className='flex flex-col items-center cursor-pointer p-3'
+            <div key={index} className='flex flex-col items-center cursor-pointer p-2 md:p-3'
             onClick={()=>OnCanvasOptionSelect(option)}>
                 <Image src={option.icon} alt={option.name} width={60} height={60}
-                className='hover:scale-115 transition-all'
+                className='hover:scale-115 transition-all w-[40px] h-[40px] md:w-[60px] md:h-[60px] object-contain'
                 />
-                <h2 className='text-xs mt-2 font-medium'> {option.name} </h2>
+                <h2 className='text-[10px] md:text-xs mt-2 font-medium text-center max-w-[80px] md:max-w-none'> {option.name} </h2>
             </div>
         ))}
 

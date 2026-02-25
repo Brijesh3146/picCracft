@@ -2,10 +2,10 @@ import { UserButton } from '@stackframe/stack'
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
-import { Download, Save } from 'lucide-react'
+import { Download, Save, Trash2 } from 'lucide-react'
 import { useCanvasHook } from '../[designId]/page'
 import { useMutation } from 'convex/react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { api } from '@/convex/_generated/api'
 
@@ -15,6 +15,8 @@ function DesignHeader({DesignInfo}) {
   const [designName, setDesignName] = useState('');
   const {canvasEditor}=useCanvasHook();
   const SaveDesign=useMutation(api.designs.SaveDesign);
+  const DeleteDesign=useMutation(api.designs.DeleteDesign);
+  const router=useRouter();
 
   useEffect(() => {
     if (DesignInfo?.name) {
@@ -24,32 +26,10 @@ function DesignHeader({DesignInfo}) {
   const {designId}=useParams();
 
  function getCroppedDataURL(canvas) {
-  const objs = canvas.getObjects();
-  if (objs.length === 0) return canvas.toDataURL({ format: 'png', quality: 1 });
-
-  // Compute bounding box
-  const bounds = objs.reduce(
-    (acc, obj) => {
-      const rect = obj.getBoundingRect(true);
-      acc.left = Math.min(acc.left, rect.left);
-      acc.top = Math.min(acc.top, rect.top);
-      acc.right = Math.max(acc.right, rect.left + rect.width);
-      acc.bottom = Math.max(acc.bottom, rect.top + rect.height);
-      return acc;
-    },
-    { left: Infinity, top: Infinity, right: -Infinity, bottom: -Infinity }
-  );
-
-  const width = bounds.right - bounds.left;
-  const height = bounds.bottom - bounds.top;
-
-  return canvas.toDataURL({
-    format: 'png',
+  return canvas.toDataURL({ 
+    format: 'png', 
     quality: 1,
-    left: bounds.left,
-    top: bounds.top,
-    width,
-    height,
+    multiplier: 1
   });
 }
 
@@ -68,6 +48,9 @@ function DesignHeader({DesignInfo}) {
 
   canvasEditor.renderAll();
   const base64Image = getCroppedDataURL(canvasEditor);
+  const JsonDesign = canvasEditor.toJSON();
+  const currentWidth = canvasEditor.getWidth();
+  const currentHeight = canvasEditor.getHeight();
 
   try {
     const response = await fetch('/api/upload-image', {
@@ -83,7 +66,10 @@ function DesignHeader({DesignInfo}) {
     if (data.error) throw new Error(data.error);
 
     const updatedUrl = `${data.url}?t=${Date.now()}`;
-    const JsonDesign = canvasEditor.toJSON();
+    
+    // Add width and height to JSON
+    JsonDesign.width = currentWidth;
+    JsonDesign.height = currentHeight;
     
     await SaveDesign({
       id: designId,
@@ -97,6 +83,24 @@ function DesignHeader({DesignInfo}) {
     toast('Failed to save design.');
   }
 };
+
+  const onDelete=async()=>{
+    if (!confirm('Are you sure you want to delete this design?')) return;
+    
+    if (designId?.startsWith('guest-')) {
+      toast.warning('Guest designs cannot be deleted');
+      return;
+    }
+
+    try {
+      await DeleteDesign({ id: designId });
+      toast.success('Design deleted!');
+      router.push('/workspace');
+    } catch (err) {
+      console.error('Delete error:', err);
+      toast.error('Failed to delete design.');
+    }
+  };
 
   const onExport=()=>{
     //Base64 Image
@@ -119,6 +123,7 @@ function DesignHeader({DesignInfo}) {
        />
        <div className='flex gap-5'>
         <Button onClick={onSave}> <Save/> Save </Button>
+        <Button onClick={onDelete} variant='destructive'> <Trash2/> Delete </Button>
         <Button onClick={()=>onExport()}> <Download/> Export </Button>
       <UserButton/>
       </div>

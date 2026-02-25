@@ -37,10 +37,16 @@ export const SaveDesign=mutation({
         imagePreview:v.optional(v.string())
     },
     handler: async(ctx, args) => {
-        const result=await ctx.db.patch(args.id,{
+        const updateData = {
             jsonTemplate:args.jsonDesign,
             imagePreview:args?.imagePreview
-        })
+        };
+        
+        // Extract width and height from jsonDesign if available
+        if(args.jsonDesign?.width) updateData.width = args.jsonDesign.width;
+        if(args.jsonDesign?.height) updateData.height = args.jsonDesign.height;
+        
+        const result=await ctx.db.patch(args.id, updateData);
         return result;
     }
 })
@@ -51,7 +57,10 @@ export const GetUserDesigns = query({
     },
     handler: async (ctx, args) => {
         const result = await ctx.db.query('designs')
-        .filter(q => q.eq(q.field('uid'), args.uid))
+        .filter(q => q.and(
+            q.eq(q.field('uid'), args.uid),
+            q.neq(q.field('jsonTemplate'), undefined)
+        ))
         .collect();
 
         return result;
@@ -78,5 +87,15 @@ export const CreateDesignFromTemplate=mutation({
         });
 
         return result
+    }
+})
+
+export const DeleteDesign=mutation({
+    args:{
+        id:v.id('designs')
+    },
+    handler:async(ctx,args)=>{
+        const result=await ctx.db.delete(args.id);
+        return result;
     }
 })

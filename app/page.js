@@ -67,17 +67,17 @@ export default function Home() {
     <div className={`min-h-screen bg-gradient-to-br ${bgColors[bgColorIndex]} text-gray-900 relative overflow-hidden transition-all duration-1000`}>
       <div className="relative z-10">
       {/* Navigation */}
-      <nav className={`flex justify-between items-center px-6 py-5 border-b border-blue-200 bg-gradient-to-br ${bgColors[bgColorIndex]} sticky top-0 z-50 shadow-md hover:shadow-lg transition-all duration-1000`}>
+      <nav className={`flex justify-between items-center px-4 md:px-6 py-5 border-b border-blue-200 bg-gradient-to-br ${bgColors[bgColorIndex]} sticky top-0 z-50 shadow-md hover:shadow-lg transition-all duration-1000`}>
         <div className="max-w-7xl mx-auto w-full flex justify-between items-center">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-pink-700 bg-clip-text text-transparent">
+          <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-600 to-pink-700 bg-clip-text text-transparent">
             PicCraft
           </h1>
-          <div className="flex items-center gap-6">
-            <Link href="/handler/sign-in" className="text-gray-600 font-medium">
+          <div className="flex items-center gap-2 md:gap-6">
+            <Link href="/handler/sign-in" className="hidden sm:block text-gray-600 font-medium">
               Sign In
             </Link>
             <Link href="/handler/sign-up">
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg transition">
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg transition text-sm md:text-base px-3 md:px-4">
                 Sign Up
               </Button>
             </Link>
@@ -87,15 +87,15 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section className="max-w-7xl mx-auto px-6 py-36 text-center group">
-        <h2 className="text-6xl md:text-7xl font-bold mb-8 leading-tight bg-gradient-to-r from-blue-700 via-purple-700 to-pink-700 bg-clip-text text-transparent group-hover:from-blue-800 group-hover:via-purple-800 group-hover:to-pink-800 transition-all duration-300">
+      <section className="max-w-7xl mx-auto px-4 md:px-6 py-16 md:py-36 text-center group">
+        <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 md:mb-8 leading-tight bg-gradient-to-r from-blue-700 via-purple-700 to-pink-700 bg-clip-text text-transparent group-hover:from-blue-800 group-hover:via-purple-800 group-hover:to-pink-800 transition-all duration-300">
           {displayedText || "Create Stunning Designs in Minutes"}
         </h2>
-        <p className="text-lg text-gray-700 mb-14 max-w-2xl mx-auto leading-relaxed italic">
+        <p className="text-base md:text-lg text-gray-700 mb-10 md:mb-14 max-w-2xl mx-auto leading-relaxed italic">
           Professional graphic design made simple. Edit images, create social media posts, and design marketing materials with AI-powered tools.
         </p>
         <Link href="/workspace">
-          <Button className="bg-gradient-to-r from-blue-700 to-purple-700 hover:from-blue-800 hover:to-purple-800 text-white px-10 py-7 text-lg rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-110 active:scale-95">
+          <Button className="bg-gradient-to-r from-blue-700 to-purple-700 hover:from-blue-800 hover:to-purple-800 text-white px-6 md:px-10 py-5 md:py-7 text-base md:text-lg rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-110 active:scale-95">
             Start Creating →
           </Button>
         </Link>
