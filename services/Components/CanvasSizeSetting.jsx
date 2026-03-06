@@ -37,6 +37,24 @@ function CanvasSizeSetting() {
       return;
     }
     
+    // Get current canvas dimensions
+    const oldWidth = canvasEditor.getWidth();
+    const oldHeight = canvasEditor.getHeight();
+    
+    // Calculate scale factors
+    const scaleX = newWidth / oldWidth;
+    const scaleY = newHeight / oldHeight;
+    
+    // Scale all objects on the canvas
+    canvasEditor.getObjects().forEach((obj) => {
+      obj.scaleX = obj.scaleX * scaleX;
+      obj.scaleY = obj.scaleY * scaleY;
+      obj.left = obj.left * scaleX;
+      obj.top = obj.top * scaleY;
+      obj.setCoords();
+    });
+    
+    // Update canvas dimensions
     canvasEditor.setDimensions({ width: newWidth, height: newHeight });
     canvasEditor.renderAll();
     toast.success(`Canvas resized to ${newWidth}x${newHeight} px`);
